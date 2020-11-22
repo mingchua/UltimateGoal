@@ -27,17 +27,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import java.util.List;
+
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+
+import java.util.List;
 
 /**
 // * This 2020-2021 OpMode illustrates the basics of using the TensorFlow Object Detection API to
@@ -50,7 +52,6 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
  * is explained below.
  */
 @TeleOp(name = "Concept: TensorFlow Object Detection", group = "Concept")
-@Disabled
 public class ConceptTensorFlowObjectDetection extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Quad";
@@ -69,7 +70,7 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
      * and paste it in to your code on the next line, between the double quotes.
      */
     private static final String VUFORIA_KEY =
-            " -- YOUR NEW VUFORIA KEY GOES HERE  --- ";
+            " Ad3EPvH/////AAABmbK1phtEg0sQiAGa76LzfdZl0l0A7qe02SnMTDj33sg9HSuurm17y5syMCyvH4423t/ZKuLv8hVk3dDqwwipaeZA2oWgbHYL2IzQ+D4VboFMoy8Oc+3/GQcOAZZ+REmtWibAYMW9yOMzh8YFGs+Uf9f4AVmH40xE8kkLG3dBjaWujr/QNlVAIOp5XWshE9v6Y02VXJhRgZf81u5GoFTYATn0xTdsPTV8c5LspAQuL/J4GermCUTs/8aNKIKjHsfD0zgWgEHTiuyYaJmgqWYc2jfA1ngDb2OGfSsH9kNJxJftkQ4uk4gToAfPRDJCagQkQq6wpmXzx2pR/3rk9u6EXJAUEuSTZ9BvR/LyVuLzSORN ";
 
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
