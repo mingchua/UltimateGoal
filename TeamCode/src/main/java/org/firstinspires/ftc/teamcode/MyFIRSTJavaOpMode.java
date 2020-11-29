@@ -2,10 +2,19 @@ package org.firstinspires.ftc.teamcode;
 
 import android.nfc.tech.TagTechnology;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gyroscope;
+
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+
+import java.util.List;
 
 @TeleOp
 public class MyFIRSTJavaOpMode extends LinearOpMode {
@@ -15,6 +24,8 @@ public class MyFIRSTJavaOpMode extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor backLeft;
     private DcMotor backRight;
+    private DcMotor intake;
+    private DcMotor transfer;
 
     @Override
     public void runOpMode() {
@@ -24,16 +35,22 @@ public class MyFIRSTJavaOpMode extends LinearOpMode {
         frontRight = hardwareMap.get(DcMotor.class, "FrontRight");
         backLeft = hardwareMap.get(DcMotor.class, "BackLeft");
         backRight = hardwareMap.get(DcMotor.class, "BackRight");
+        intake = hardwareMap.get(DcMotor.class, "intake");
+        transfer = hardwareMap.get(DcMotor.class, "transfer");
         //resets encoders to zero
         frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        intake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        transfer.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //set power ---> runs
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        transfer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //shows status on driver station
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -49,7 +66,8 @@ public class MyFIRSTJavaOpMode extends LinearOpMode {
         double backLeftPower;
         double backRightPower;
         double maxAbsPower;
-        double maxPower = 0.5;
+        double maxPower = 0.4;
+        double righttrigger;
         //while running
         while (opModeIsActive()) {
             // forward and backwards
@@ -57,6 +75,7 @@ public class MyFIRSTJavaOpMode extends LinearOpMode {
             x = -this.gamepad1.left_stick_x;
             y = -this.gamepad1.left_stick_y;
             rotation = -this.gamepad1.right_stick_x;
+            righttrigger = this.gamepad1.right_trigger;
 
             frontLeftPower = rotation - y - x;
             frontRightPower = rotation + y + x;
@@ -83,6 +102,16 @@ public class MyFIRSTJavaOpMode extends LinearOpMode {
             frontRight.setPower(frontRightPower);
             backLeft.setPower(backLeftPower);
             backRight.setPower(backRightPower);
+
+            //runs intake and transfer when right trigger is pressed beyond 0.2, puny human
+            if (righttrigger > 0.2) {
+                intake.setPower(0.6);
+                transfer.setPower(-1);
+            } else {
+                intake.setPower(0);
+                transfer.setPower(0);
+            }
+
             //logs for puny humans
             //sends power and position (degrees the wheels have spun) to driver station.
             telemetry.addData("frontLeftPower", (frontLeftPower));
