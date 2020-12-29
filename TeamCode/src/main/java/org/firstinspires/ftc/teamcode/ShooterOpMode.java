@@ -47,7 +47,7 @@ public class ShooterOpMode extends LinearOpMode {
             boolean flywheelOn = gamepad1.left_bumper;
 
             if (flywheelOn) {
-                theShooter.setPower(1.0);
+                theShooter.setPower(-1.0);
 //            flywheelOn = !flywheelOn;
             } else {
                 theShooter.setPower(0.0);
