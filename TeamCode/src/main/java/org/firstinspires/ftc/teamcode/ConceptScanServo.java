@@ -1,5 +1,3 @@
-package org.firstinspires.ftc.teamcode;
-
 /* Copyright (c) 2017 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -29,7 +27,9 @@ package org.firstinspires.ftc.teamcode;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -49,19 +49,17 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 @TeleOp(name = "Concept: Scan Servo", group = "Concept")
-
-public class Aservo extends LinearOpMode {
+public class ConceptScanServo extends LinearOpMode {
 
     static final double INCREMENT   = 0.01;     // amount to slew servo each CYCLE_MS cycle
     static final int    CYCLE_MS    =   50;     // period of each cycle
-    static final double MAX_POS     =  1.0;     // Maximum rotational position
-    static final double MIN_POS     =  0.0;     // Minimum rotational position
+    static final double MAX_POS     =  0.8;     // Maximum rotational position
+    static final double MIN_POS     =  0.0;      // Minimum rotational position
 
     // Define class members
     Servo   servo;
     double  position = (MAX_POS - MIN_POS) / 2; // Start at halfway position
     boolean rampUp = true;
-
 
     @Override
     public void runOpMode() {
@@ -69,37 +67,46 @@ public class Aservo extends LinearOpMode {
         // Connect to servo (Assume PushBot Left Hand)
         // Change the text in quotes to match any servo name on your robot.
         servo = hardwareMap.get(Servo.class, "left_hand");
-
-        // Wait for the start button
+     // Wait for the start button
         telemetry.addData(">", "Press Start to scan Servo." );
         telemetry.update();
         waitForStart();
 
 
-        // run until the end of the match (driver presses STOP)
-        double tgtPower = 0;
-        while (opModeIsActive()) {
-            tgtPower = -this.gamepad1.left_stick_y;
+        // Scan servo till stop pressed.
+        while(opModeIsActive()){
 
-            // check to see if we need to move the servo.
-            if(gamepad1.y) {
-                // move to 0 degrees.
-                servo.setPosition(.3);
-            } else if (gamepad1.x || gamepad1.b) {
-                // move to 90 degrees.
-                servo.setPosition(0.45);
-            } else if (gamepad1.a) {
-                // move to 180 degrees.
-                servo.setPosition(.7);
+            // slew the servo, according to the rampUp (direction) variable.
+            if (rampUp) {
+                // Keep stepping up until we hit the max value.
+                position += INCREMENT ;
+                if (position >= MAX_POS ) {
+                    position = MAX_POS;
+                    rampUp = !rampUp;   // Switch ramp direction
+                }
             }
-            telemetry.addData("Servo Position", servo.getPosition());
-            telemetry.addData("Target Power", tgtPower);
-            telemetry.addData("Status", "Running");
+            else {
+                // Keep stepping down until we hit the min value.
+                position -= INCREMENT ;
+                if (position <= MIN_POS ) {
+                    position = MIN_POS;
+                    rampUp = !rampUp;  // Switch ramp direction
+                }
+            }
+
+            // Display the current value
+            telemetry.addData("Servo Position", "%5.2f", position);
+            telemetry.addData(">", "Press Stop to end test." );
             telemetry.update();
+
+            // Set the servo to the new position and pause;
+            servo.setPosition(position);
+            sleep(CYCLE_MS);
+            idle();
         }
+
         // Signal done;
         telemetry.addData(">", "Done");
         telemetry.update();
     }
 }
-
