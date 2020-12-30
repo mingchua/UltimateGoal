@@ -108,7 +108,7 @@ public class MyFIRSTJavaOpMode extends LinearOpMode {
                 transfer.setPower(-1);
             } else {
                 if (rightbumper == true) {
-                    transfer.setVelocity(1200);
+                    transfer.setVelocity(1200);                  
                 } else {
                     transfer.setVelocity(0);
                 }
