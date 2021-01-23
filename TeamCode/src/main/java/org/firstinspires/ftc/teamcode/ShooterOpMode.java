@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -13,7 +14,7 @@ public class ShooterOpMode extends LinearOpMode {
     //defines member fields
 //    private Gyroscope imu;
 
-    private DcMotor theShooter;
+    private DcMotorEx theShooter;
     static final double INCREMENT = 0.01;     // Amount to slew servo each CYCLE_MS cycle
     static final int CYCLE_MS = 50;     // Period of each cycle
     static final double MAX_POS = 1.0;     // Maximum rotational position
@@ -28,12 +29,12 @@ public class ShooterOpMode extends LinearOpMode {
     public void runOpMode() {
 //        imu = hardwareMap.get(Gyroscope.class, "imu");
         //assigns motor to member fields
-        theShooter = hardwareMap.get(DcMotor.class, "shooterthing");
+        theShooter = hardwareMap.get(DcMotorEx.class, "shooterthing");
         servo = hardwareMap.get(Servo.class, "left_hand");
         //resets encoders to zero
-        theShooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        theShooter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         //set power ---> runs
-        theShooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        theShooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         //shows status on driver station
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -47,15 +48,15 @@ public class ShooterOpMode extends LinearOpMode {
             boolean flywheelOn = gamepad1.left_bumper;
 
             if (flywheelOn) {
-                theShooter.setPower(-1.0);
+                theShooter.setVelocity(-1600);
 //            flywheelOn = !flywheelOn;
             } else {
-                theShooter.setPower(0.0);
+                theShooter.setVelocity(0.0);
             }
             if (triggerOn) {
-                servo.setPosition(0.27);
+                servo.setPosition(0.3);
                 sleep(500);
-                servo.setPosition(0.39);
+                servo.setPosition(0.6);
             }
 
             telemetry.addData("Servo Position", servo.getPosition());
