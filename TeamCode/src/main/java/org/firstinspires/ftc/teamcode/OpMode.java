@@ -39,10 +39,10 @@ public class OpMode extends LinearOpMode {
     public void runOpMode() {
 //        imu = hardwareMap.get(Gyroscope.class, "imu");
         //assigns motor to member fields
-        frontLeft = hardwareMap.get(DcMotor.class, "FrontLeft");
-        frontRight = hardwareMap.get(DcMotor.class, "FrontRight");
-        backLeft = hardwareMap.get(DcMotor.class, "BackLeft");
-        backRight = hardwareMap.get(DcMotor.class, "BackRight");
+        frontLeft = hardwareMap.get(DcMotor.class, "leftFront");
+        frontRight = hardwareMap.get(DcMotor.class, "rightFront");
+        backLeft = hardwareMap.get(DcMotor.class, "leftRear");
+        backRight = hardwareMap.get(DcMotor.class, "rightRear");
         transfer = hardwareMap.get(DcMotorEx.class, "transfer");
         shooter = hardwareMap.get(DcMotorEx.class, "shooterthing");
         servo = hardwareMap.get(Servo.class, "left_hand");
