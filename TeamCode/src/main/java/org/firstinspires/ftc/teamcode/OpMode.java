@@ -145,12 +145,12 @@ public class OpMode extends LinearOpMode {
                 shooter.setVelocity(0.0);
             }
             if (triggerOn) {
-                servo.setPosition(0.3);
+                servo.setPosition(0.5);
                 sleep(500);
                 servo.setPosition(0.6);
             }
 
-            //logs for puny humans
+            //logs for the best humans
             //sends power and position (degrees the wheels have spun) to driver station.
             telemetry.addData("Flywheel Velocity", flywheelspeed);
             telemetry.addData("transfer power",transfer.getVelocity());

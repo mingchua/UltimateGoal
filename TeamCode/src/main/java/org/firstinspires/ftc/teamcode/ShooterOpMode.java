@@ -48,13 +48,13 @@ public class ShooterOpMode extends LinearOpMode {
             boolean flywheelOn = gamepad1.left_bumper;
 
             if (flywheelOn) {
-                theShooter.setVelocity(-1600);
-//            flywheelOn = !flywheelOn;
+                theShooter.setVelocity(-1250);
+//            flywheelOn = !flywheel On;
             } else {
                 theShooter.setVelocity(0.0);
             }
             if (triggerOn) {
-                servo.setPosition(0.3);
+                servo.setPosition(0.5);
                 sleep(500);
                 servo.setPosition(0.6);
             }
