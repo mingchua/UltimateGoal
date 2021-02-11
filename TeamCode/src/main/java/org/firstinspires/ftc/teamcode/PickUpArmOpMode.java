@@ -2,15 +2,17 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
+@TeleOp
 public class PickUpArmOpMode extends LinearOpMode {
 Servo elbow;
 Servo claw;
-static final double ELBOW_POS_1 = 0.25;
-static final double ELBOW_POS_2 = 0.75;
-static final double CLAW_POS_1 = 0.65;
-static final double CLAW_POS_2 = 0.45;
+static final double ELBOW_POS_1 = 1;
+static final double ELBOW_POS_2 = 0;
+static final double CLAW_POS_1 = 1;
+static final double CLAW_POS_2 = .9;
 
 
     @Override
