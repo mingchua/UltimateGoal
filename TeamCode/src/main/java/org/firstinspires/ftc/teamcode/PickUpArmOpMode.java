@@ -9,33 +9,31 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class PickUpArmOpMode extends LinearOpMode {
 Servo elbow;
 Servo claw;
-static final double ELBOW_POS_1 = 1;
-static final double ELBOW_POS_2 = 0;
-static final double CLAW_POS_1 = 1;
-static final double CLAW_POS_2 = .9;
+static final double ELBOW_POS_1 = 0.85;
+static final double ELBOW_POS_2 = 0.3;
+static final double CLAW_POS_1 = 0.6;
+static final double CLAW_POS_2 = 0.2;
 
 
     @Override
     public void runOpMode() throws InterruptedException {
-        elbow = hardwareMap.get(Servo.class, "pick_up_elbow");
-        claw = hardwareMap.get(Servo.class, "pick_up_claw");
+        elbow = hardwareMap.get(Servo.class, "elbow");
+        claw = hardwareMap.get(Servo.class, "claw");
         waitForStart();
-        boolean lastybutton = false;
         double currentElbowPos = ELBOW_POS_1;
         boolean lastrightbumper = false;
         double currentClawPos = CLAW_POS_1;
         while (opModeIsActive()) {
-            boolean thisybutton = gamepad1.y;
-            if (thisybutton && ! lastybutton){
-                currentElbowPos = (currentElbowPos == ELBOW_POS_1)? ELBOW_POS_2:ELBOW_POS_1;
-                elbow.setPosition(currentElbowPos);
+            if (gamepad1.b) {
+                claw.setPosition(CLAW_POS_1);
+            } else if (gamepad1.x) {
+                claw.setPosition(CLAW_POS_2);
             }
-            lastybutton = thisybutton;
 
             boolean thisrightbumper = gamepad1.right_bumper;
             if (thisrightbumper && ! lastrightbumper){
-                currentClawPos = (currentClawPos == CLAW_POS_1)? CLAW_POS_2:CLAW_POS_1;
-                claw.setPosition(currentClawPos);
+                currentElbowPos = (currentElbowPos == ELBOW_POS_1)? ELBOW_POS_2:ELBOW_POS_1;
+                elbow.setPosition(currentElbowPos);
             }
             lastrightbumper = thisrightbumper;
         }
