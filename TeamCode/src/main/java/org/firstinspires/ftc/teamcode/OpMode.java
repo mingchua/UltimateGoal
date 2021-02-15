@@ -21,7 +21,14 @@ import java.util.List;
 @TeleOp
 public class OpMode extends LinearOpMode {
     //defines member fields
-//    private Gyroscope imu;
+
+    Servo elbow;
+    Servo claw;
+    static final double ELBOW_POS_1 = 0.85;
+    static final double ELBOW_POS_2 = 0.3;
+    static final double CLAW_POS_1 = 0.6;
+    static final double CLAW_POS_2 = 0.2;
+
     private DcMotor frontLeft;
     private DcMotor frontRight;
     private DcMotor backLeft;
@@ -39,6 +46,10 @@ public class OpMode extends LinearOpMode {
     public void runOpMode() {
 //        imu = hardwareMap.get(Gyroscope.class, "imu");
         //assigns motor to member fields
+
+        elbow = hardwareMap.get(Servo.class, "elbow");
+        claw = hardwareMap.get(Servo.class, "claw");
+
         frontLeft = hardwareMap.get(DcMotor.class, "leftFront");
         frontRight = hardwareMap.get(DcMotor.class, "rightFront");
         backLeft = hardwareMap.get(DcMotor.class, "leftRear");
@@ -77,9 +88,14 @@ public class OpMode extends LinearOpMode {
         double maxAbsPower;
         double maxPower = 0.4;
         double righttrigger;
-        boolean rightbumper;
+        double lefttrigger;
         long curTime = System.currentTimeMillis();
-        int flywheelspeed = -1100;
+        int flywheelspeed = -1250;
+
+        double currentElbowPos = ELBOW_POS_1;
+        boolean lastrightbumper = false;
+        double currentClawPos = CLAW_POS_1;
+
         //while running
         while (opModeIsActive()) {
             // forward and backwards
@@ -88,7 +104,7 @@ public class OpMode extends LinearOpMode {
             y = -this.gamepad1.left_stick_y;
             rotation = -this.gamepad1.right_stick_x;
             righttrigger = this.gamepad1.right_trigger;
-            rightbumper = this.gamepad1.right_bumper;
+            lefttrigger = this.gamepad1.left_trigger;
             boolean triggerOn = gamepad1.y;
             boolean flywheelOn = gamepad1.left_bumper;
 
@@ -122,7 +138,7 @@ public class OpMode extends LinearOpMode {
             if (righttrigger > 0.2) {
                 transfer.setPower(-1);
             } else {
-                if (rightbumper == true) {
+                if (lefttrigger > 0.2) {
                     transfer.setVelocity(1200);
                 } else {
                     transfer.setVelocity(0);
@@ -149,6 +165,18 @@ public class OpMode extends LinearOpMode {
                 sleep(500);
                 servo.setPosition(0.6);
             }
+            if (gamepad1.b) {
+                claw.setPosition(CLAW_POS_1);
+            } else if (gamepad1.x) {
+                claw.setPosition(CLAW_POS_2);
+            }
+
+            boolean thisrightbumper = gamepad1.right_bumper;
+            if (thisrightbumper && ! lastrightbumper){
+                currentElbowPos = (currentElbowPos == ELBOW_POS_1)? ELBOW_POS_2:ELBOW_POS_1;
+                elbow.setPosition(currentElbowPos);
+            }
+            lastrightbumper = thisrightbumper;
 
             //logs for the best humans
             //sends power and position (degrees the wheels have spun) to driver station.
