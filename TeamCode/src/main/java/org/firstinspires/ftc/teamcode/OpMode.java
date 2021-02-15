@@ -1,22 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.nfc.tech.TagTechnology;
-
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.robotcore.hardware.Servo;
-
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-
-import java.util.List;
 
 @TeleOp
 public class OpMode extends LinearOpMode {
@@ -24,10 +12,10 @@ public class OpMode extends LinearOpMode {
 
     Servo elbow;
     Servo claw;
-    static final double ELBOW_POS_1 = 0.85;
-    static final double ELBOW_POS_2 = 0.3;
-    static final double CLAW_POS_1 = 0.6;
-    static final double CLAW_POS_2 = 0.2;
+    static final double ELBOW_DOWN_POS = 0.85;
+    static final double ELBOW_UP_POS = 0.3;
+    static final double CLAW_CLOSED_POS = 0.6;
+    static final double CLAW_OPEN_POS = 0.2;
 
     private DcMotor frontLeft;
     private DcMotor frontRight;
@@ -92,9 +80,9 @@ public class OpMode extends LinearOpMode {
         long curTime = System.currentTimeMillis();
         int flywheelspeed = -1250;
 
-        double currentElbowPos = ELBOW_POS_1;
+        double currentElbowPos = ELBOW_DOWN_POS;
         boolean lastrightbumper = false;
-        double currentClawPos = CLAW_POS_1;
+        double currentClawPos = CLAW_CLOSED_POS;
 
         //while running
         while (opModeIsActive()) {
@@ -166,14 +154,14 @@ public class OpMode extends LinearOpMode {
                 servo.setPosition(0.6);
             }
             if (gamepad1.b) {
-                claw.setPosition(CLAW_POS_1);
+                claw.setPosition(CLAW_CLOSED_POS);
             } else if (gamepad1.x) {
-                claw.setPosition(CLAW_POS_2);
+                claw.setPosition(CLAW_OPEN_POS);
             }
 
             boolean thisrightbumper = gamepad1.right_bumper;
             if (thisrightbumper && ! lastrightbumper){
-                currentElbowPos = (currentElbowPos == ELBOW_POS_1)? ELBOW_POS_2:ELBOW_POS_1;
+                currentElbowPos = (currentElbowPos == ELBOW_DOWN_POS)? ELBOW_UP_POS : ELBOW_DOWN_POS;
                 elbow.setPosition(currentElbowPos);
             }
             lastrightbumper = thisrightbumper;
