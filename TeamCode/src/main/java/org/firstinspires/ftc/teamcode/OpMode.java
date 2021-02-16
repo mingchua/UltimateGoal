@@ -122,7 +122,7 @@ public class OpMode extends LinearOpMode {
             backLeft.setPower(backLeftPower);
             backRight.setPower(backRightPower);
 
-            //runs intake and transfer when right trigger is pressed beyond 0.2, puny human
+            //runs intake and transfer when right trigger is pressed beyond 0.2
             if (righttrigger > 0.2) {
                 transfer.setPower(-1);
             } else {
