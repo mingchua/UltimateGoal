@@ -1,10 +1,15 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 @TeleOp
 public class OpMode extends LinearOpMode {
@@ -45,6 +50,8 @@ public class OpMode extends LinearOpMode {
         transfer = hardwareMap.get(DcMotorEx.class, "transfer");
         shooter = hardwareMap.get(DcMotorEx.class, "shooterthing");
         servo = hardwareMap.get(Servo.class, "left_hand");
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+
         //resets encoders to zero
         frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -59,6 +66,10 @@ public class OpMode extends LinearOpMode {
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         transfer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+
+        // Set your initial pose to x: 10, y: 10, facing 90 degrees
+        drive.setPoseEstimate(new Pose2d(-63, -24, Math.toRadians(0)));
+
         //shows status on driver station
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -86,41 +97,38 @@ public class OpMode extends LinearOpMode {
 
         //while running
         while (opModeIsActive()) {
+
+            // Make sure to call drive.update() on *every* loop
+            // Increasing loop time by utilizing bulk reads and minimizing writes will increase your odometry accuracy
+            drive.update();
+
+            // Read pose
+            Pose2d poseEstimate = drive.getPoseEstimate();
+
+            // Create a vector from the gamepad x/y inputs
+            // Then, rotate that vector by the inverse of current heading
+            Vector2d input = new Vector2d(
+                    -gamepad1.left_stick_y,
+                    -gamepad1.left_stick_x
+            ).rotated(-poseEstimate.getHeading());
+
+            // Pass in the rotated input + right stick value for rotation
+            // Rotation is not part of the rotated input thus must be passed in separately
+            drive.setWeightedDrivePower(
+                    new Pose2d(
+                            input.getX(),
+                            input.getY(),
+                            -gamepad1.right_stick_x
+                    )
+            );
+
             // forward and backwards
             //assigns gamepads joysticks directions
-            x = -this.gamepad1.left_stick_x;
-            y = -this.gamepad1.left_stick_y;
-            rotation = -this.gamepad1.right_stick_x;
+
             righttrigger = this.gamepad1.right_trigger;
             lefttrigger = this.gamepad1.left_trigger;
             boolean triggerOn = gamepad1.y;
             boolean flywheelOn = gamepad1.left_bumper;
-
-            frontLeftPower = rotation - y + x;
-            frontRightPower = rotation + y + x;
-            backLeftPower = rotation - y - x;
-            backRightPower = rotation + y - x;
-
-            maxAbsPower = Math.max(Math.abs(frontLeftPower), Math.abs(frontRightPower));
-            maxAbsPower = Math.max(Math.abs(backLeftPower), maxAbsPower);
-            maxAbsPower = Math.max(Math.abs(backRightPower), maxAbsPower);
-            if (maxAbsPower > 1) {
-                //maximum power value becomes > 1
-                frontLeftPower = frontLeftPower / maxAbsPower;
-                frontRightPower = frontRightPower / maxAbsPower;
-                backLeftPower = backLeftPower / maxAbsPower;
-                backRightPower = backRightPower / maxAbsPower;
-            }
-
-            frontLeftPower = frontLeftPower * maxPower;
-            frontRightPower = frontRightPower * maxPower;
-            backLeftPower = backLeftPower * maxPower;
-            backRightPower = backRightPower * maxPower;
-
-            frontLeft.setPower(frontLeftPower);
-            frontRight.setPower(frontRightPower);
-            backLeft.setPower(backLeftPower);
-            backRight.setPower(backRightPower);
 
             //runs intake and transfer when right trigger is pressed beyond 0.2
             if (righttrigger > 0.2) {
@@ -170,10 +178,6 @@ public class OpMode extends LinearOpMode {
             //sends power and position (degrees the wheels have spun) to driver station.
             telemetry.addData("Flywheel Velocity", flywheelspeed);
             telemetry.addData("transfer power",transfer.getVelocity());
-            telemetry.addData("frontLeftPower", (frontLeftPower));
-            telemetry.addData("frontRightPower", (frontRightPower));
-            telemetry.addData("backLeftPower", (backLeftPower));
-            telemetry.addData("backRightPower", (backRightPower));
             telemetry.addData("frontLeft Position", frontLeft.getCurrentPosition());
             telemetry.addData("frontRight Position", frontRight.getCurrentPosition());
             telemetry.addData("backLeft Position", backLeft.getCurrentPosition());
@@ -184,4 +188,38 @@ public class OpMode extends LinearOpMode {
         }
     }
 }
+
+//Archive of code that was replaced by road runner. Let's get an f
+
+//            x = -this.gamepad1.left_stick_x;
+//            y = -this.gamepad1.left_stick_y;
+//            rotation = -this.gamepad1.right_stick_x;
+
+//            frontLeftPower = rotation - y + x;
+//            frontRightPower = rotation + y + x;
+//            backLeftPower = rotation - y - x;
+//            backRightPower = rotation + y - x;
+//
+//            maxAbsPower = Math.max(Math.abs(frontLeftPower), Math.abs(frontRightPower));
+//            maxAbsPower = Math.max(Math.abs(backLeftPower), maxAbsPower);
+//            maxAbsPower = Math.max(Math.abs(backRightPower), maxAbsPower);
+//            if (maxAbsPower > 1) {
+//                //maximum power value becomes > 1
+//                frontLeftPower = frontLeftPower / maxAbsPower;
+//                frontRightPower = frontRightPower / maxAbsPower;
+//                backLeftPower = backLeftPower / maxAbsPower;
+//                backRightPower = backRightPower / maxAbsPower;
+//            }
+//
+//            frontLeftPower = frontLeftPower * maxPower;
+//            frontRightPower = frontRightPower * maxPower;
+//            backLeftPower = backLeftPower * maxPower;
+//            backRightPower = backRightPower * maxPower;
+//
+//            frontLeft.setPower(frontLeftPower);
+//            frontRight.setPower(frontRightPower);
+//            backLeft.setPower(backLeftPower);
+//            backRight.setPower(backRightPower);
+
+
 
