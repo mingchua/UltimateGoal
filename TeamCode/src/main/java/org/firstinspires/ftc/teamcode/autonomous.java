@@ -92,7 +92,7 @@ public class autonomous extends LinearOpMode {
 
         claw.setPosition(CLAW_CLOSED_POS);
         drive.followTrajectory(trajfirst);
-        sleep(2000);
+        sleep(2500);
         List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
         int rings = 0;
         if (updatedRecognitions != null) {
@@ -129,14 +129,17 @@ public class autonomous extends LinearOpMode {
         }else {
             traj1 = drive.trajectoryBuilder(trajfirst.end())
                     .splineTo(new Vector2d(-24, -12), Math.toRadians(0))
-                    .splineTo(new Vector2d(12, -60), Math.toRadians(180))
+                    .splineTo(new Vector2d(-12, -60), Math.toRadians(180))
                     .build();
         }
         Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                .splineTo(new Vector2d(0, -36), Math.toRadians(0))
+//                .splineTo(new Vector2d(-24, -12), Math.toRadians(0))
+                .lineToLinearHeading(new Pose2d(0, -36, Math.toRadians(0)))
                 .build();
 
-
+        Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
+                .lineToLinearHeading(new Pose2d(6, -36, Math.toRadians(0)))
+                .build();
 
         drive.followTrajectory(traj1);
         elbow.setPosition(ELBOW_DOWN_POS);
@@ -149,7 +152,7 @@ public class autonomous extends LinearOpMode {
         shoot();
         shoot();
         shoot();
-
+        drive.followTrajectory(traj3);
     }
     private void shoot() {
         shooter.setVelocity(-1250);
