@@ -68,7 +68,7 @@ public class OpMode extends LinearOpMode {
         shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         // Set your initial pose to x: 10, y: 10, facing 90 degrees
-        drive.setPoseEstimate(new Pose2d(-63, -24, Math.toRadians(0)));
+        drive.setPoseEstimate(PoseStorage.currentPose);
 
         //shows status on driver station
         telemetry.addData("Status", "Initialized");

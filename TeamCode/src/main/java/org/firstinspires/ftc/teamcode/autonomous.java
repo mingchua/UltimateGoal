@@ -153,6 +153,8 @@ public class autonomous extends LinearOpMode {
         shoot();
         shoot();
         drive.followTrajectory(traj3);
+
+        PoseStorage.currentPose = drive.getPoseEstimate();
     }
     private void shoot() {
         shooter.setVelocity(-1250);
