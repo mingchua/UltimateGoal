@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -25,6 +26,7 @@ import java.util.List;
 public class autonomous extends LinearOpMode {
     Servo elbow;
     Servo claw;
+    private DcMotorEx shooter;
     static final double ELBOW_DOWN_POS = 0.85;
     static final double ELBOW_UP_POS = 0.3;
     static final double CLAW_OPEN_POS = 0.6;
@@ -63,8 +65,13 @@ public class autonomous extends LinearOpMode {
         if (tfod != null) {
             tfod.activate();
         }
+        shooter = hardwareMap.get(DcMotorEx.class, "shooterthing");
         elbow = hardwareMap.get(Servo.class, "elbow");
         claw = hardwareMap.get(Servo.class, "claw");
+
+        shooter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
         // We want to start the bot at x: 10, y: -8, heading: 90 degrees
@@ -81,7 +88,7 @@ public class autonomous extends LinearOpMode {
 
         if(isStopRequested()) return;
 
-       // claw.setPosition(CLAW_CLOSED_POS);
+        claw.setPosition(CLAW_CLOSED_POS);
         drive.followTrajectory(trajfirst);
         sleep(500);
         List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
@@ -124,21 +131,19 @@ public class autonomous extends LinearOpMode {
                     .build();
         }
         Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                //.splineTo(new Vector2d(-12, -48), Math.toRadians(0))
-                .lineToConstantHeading(new Vector2d(-24, -48))
-                .splineToConstantHeading(new Vector2d(-36, -45), Math.toRadians(0),
-                        new MinVelocityConstraint(Arrays.asList(new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
-                                new MecanumVelocityConstraint(20,DriveConstants.TRACK_WIDTH))),new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL))
-
+                .splineTo(new Vector2d(0, -36), Math.toRadians(0))
                 .build();
+
+
+
         drive.followTrajectory(traj1);
-/*        elbow.setPosition(ELBOW_DOWN_POS);
+        elbow.setPosition(ELBOW_DOWN_POS);
         sleep(1000);
         claw.setPosition(CLAW_OPEN_POS);
         sleep(100);
-        elbow.setPosition(ELBOW_UP_POS);*/
-//        drive.followTrajectory(traj2);
-//        elbow.setPosition(ELBOW_DOWN_POS);
+        elbow.setPosition(ELBOW_UP_POS);
+        drive.followTrajectory(traj2);
+        shooter.setVelocity(-1250);
     }
     private void initVuforia() {
         /*
