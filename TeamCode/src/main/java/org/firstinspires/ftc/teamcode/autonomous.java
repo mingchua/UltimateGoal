@@ -26,6 +26,7 @@ import java.util.List;
 public class autonomous extends LinearOpMode {
     Servo elbow;
     Servo claw;
+    Servo trigger;
     private DcMotorEx shooter;
     static final double ELBOW_DOWN_POS = 0.85;
     static final double ELBOW_UP_POS = 0.3;
@@ -68,6 +69,7 @@ public class autonomous extends LinearOpMode {
         shooter = hardwareMap.get(DcMotorEx.class, "shooterthing");
         elbow = hardwareMap.get(Servo.class, "elbow");
         claw = hardwareMap.get(Servo.class, "claw");
+        trigger = hardwareMap.get(Servo.class, "left_hand");
 
         shooter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
@@ -90,7 +92,7 @@ public class autonomous extends LinearOpMode {
 
         claw.setPosition(CLAW_CLOSED_POS);
         drive.followTrajectory(trajfirst);
-        sleep(500);
+        sleep(2000);
         List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
         int rings = 0;
         if (updatedRecognitions != null) {
@@ -143,7 +145,20 @@ public class autonomous extends LinearOpMode {
         sleep(100);
         elbow.setPosition(ELBOW_UP_POS);
         drive.followTrajectory(traj2);
+        sleep(500);
+        shoot();
+        shoot();
+        shoot();
+
+    }
+    private void shoot() {
         shooter.setVelocity(-1250);
+        while (shooter.getVelocity() > -1220 || shooter.getVelocity() < -1280) {
+            sleep(100);
+        }
+        trigger.setPosition(0.5);
+        sleep(500);
+        trigger.setPosition(0.6);
     }
     private void initVuforia() {
         /*
