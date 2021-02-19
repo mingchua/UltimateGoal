@@ -28,10 +28,6 @@ public class autonomous extends LinearOpMode {
     Servo claw;
     Servo trigger;
     private DcMotorEx shooter;
-    static final double ELBOW_DOWN_POS = 0.85;
-    static final double ELBOW_UP_POS = 0.3;
-    static final double CLAW_OPEN_POS = 0.6;
-    static final double CLAW_CLOSED_POS = 0.2;
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
     private static final String LABEL_QUAD_ELEMENT = "Quad";
     private static final String LABEL_SINGLE_ELEMENT = "Single";
@@ -90,7 +86,7 @@ public class autonomous extends LinearOpMode {
 
         if(isStopRequested()) return;
 
-        claw.setPosition(CLAW_CLOSED_POS);
+        claw.setPosition(Constants.CLAW_CLOSED_POS);
         drive.followTrajectory(trajfirst);
         sleep(2500);
         List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
@@ -142,13 +138,12 @@ public class autonomous extends LinearOpMode {
                 .build();
 
         drive.followTrajectory(traj1);
-        elbow.setPosition(ELBOW_DOWN_POS);
+        elbow.setPosition(Constants.ELBOW_DOWN_POS);
         sleep(1000);
-        claw.setPosition(CLAW_OPEN_POS);
+        claw.setPosition(Constants.CLAW_OPEN_POS);
         sleep(100);
-        elbow.setPosition(ELBOW_UP_POS);
+        elbow.setPosition(Constants.ELBOW_UP_POS);
         drive.followTrajectory(traj2);
-        sleep(500);
         shoot();
         shoot();
         shoot();
@@ -157,12 +152,13 @@ public class autonomous extends LinearOpMode {
         PoseStorage.currentPose = drive.getPoseEstimate();
     }
     private void shoot() {
-        shooter.setVelocity(-1250);
-        while (shooter.getVelocity() > -1220 || shooter.getVelocity() < -1280) {
+        shooter.setVelocity(Constants.FLY_WHEEL_SPEED);
+        while (shooter.getVelocity() > Constants.FLY_WHEEL_SPEED + Constants.FLY_WHEEL_DELTA ||
+                shooter.getVelocity() < Constants.FLY_WHEEL_SPEED - Constants.FLY_WHEEL_DELTA) {
             sleep(100);
         }
         trigger.setPosition(0.5);
-        sleep(500);
+        sleep(50);
         trigger.setPosition(0.6);
     }
     private void initVuforia() {

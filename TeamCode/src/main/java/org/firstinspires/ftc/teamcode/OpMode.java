@@ -17,10 +17,6 @@ public class OpMode extends LinearOpMode {
 
     Servo elbow;
     Servo claw;
-    static final double ELBOW_DOWN_POS = 0.85;
-    static final double ELBOW_UP_POS = 0.3;
-    static final double CLAW_CLOSED_POS = 0.6;
-    static final double CLAW_OPEN_POS = 0.2;
 
     private DcMotor frontLeft;
     private DcMotor frontRight;
@@ -79,21 +75,15 @@ public class OpMode extends LinearOpMode {
         //defines local variables
         double x = 0;
         double y = 0;
-        double rotation = 0;
-        double frontLeftPower;
-        double frontRightPower;
-        double backLeftPower;
-        double backRightPower;
-        double maxAbsPower;
-        double maxPower = 0.4;
+        double turning = 0;
         double righttrigger;
         double lefttrigger;
         long curTime = System.currentTimeMillis();
-        int flywheelspeed = -1250;
+        int flywheelspeed = Constants.FLY_WHEEL_SPEED;
 
-        double currentElbowPos = ELBOW_DOWN_POS;
+        double currentElbowPos = Constants.ELBOW_DOWN_POS;
         boolean lastrightbumper = false;
-        double currentClawPos = CLAW_CLOSED_POS;
+        double currentClawPos = Constants.CLAW_CLOSED_POS;
 
         //while running
         while (opModeIsActive()) {
@@ -107,18 +97,21 @@ public class OpMode extends LinearOpMode {
 
             // Create a vector from the gamepad x/y inputs
             // Then, rotate that vector by the inverse of current heading
+            x = gamepad1.left_stick_x;
+            y = gamepad1.left_stick_y;
             Vector2d input = new Vector2d(
-                    -gamepad1.left_stick_y,
-                    -gamepad1.left_stick_x
+                    y * y * (y > 0 ? -1 : 1),
+                    x * x * (x > 0 ? -1 : 1)
             ).rotated(-poseEstimate.getHeading());
 
             // Pass in the rotated input + right stick value for rotation
             // Rotation is not part of the rotated input thus must be passed in separately
+            turning = gamepad1.right_stick_x;
             drive.setWeightedDrivePower(
                     new Pose2d(
                             input.getX(),
                             input.getY(),
-                            -gamepad1.right_stick_x
+                            turning * turning * (turning > 0 ? -1 : 1)
                     )
             );
 
@@ -158,18 +151,18 @@ public class OpMode extends LinearOpMode {
             }
             if (triggerOn) {
                 servo.setPosition(0.5);
-                sleep(500);
+                sleep(50);
                 servo.setPosition(0.6);
             }
             if (gamepad1.b) {
-                claw.setPosition(CLAW_CLOSED_POS);
+                claw.setPosition(Constants.CLAW_CLOSED_POS);
             } else if (gamepad1.x) {
-                claw.setPosition(CLAW_OPEN_POS);
+                claw.setPosition(Constants.CLAW_OPEN_POS);
             }
 
             boolean thisrightbumper = gamepad1.right_bumper;
             if (thisrightbumper && ! lastrightbumper){
-                currentElbowPos = (currentElbowPos == ELBOW_DOWN_POS)? ELBOW_UP_POS : ELBOW_DOWN_POS;
+                currentElbowPos = (currentElbowPos == Constants.ELBOW_DOWN_POS)? Constants.ELBOW_UP_POS : Constants.ELBOW_DOWN_POS;
                 elbow.setPosition(currentElbowPos);
             }
             lastrightbumper = thisrightbumper;
@@ -177,6 +170,7 @@ public class OpMode extends LinearOpMode {
             //logs for the best humans
             //sends power and position (degrees the wheels have spun) to driver station.
             telemetry.addData("Flywheel Velocity", flywheelspeed);
+            telemetry.addData("Elbow position", currentElbowPos);
             telemetry.addData("transfer power",transfer.getVelocity());
             telemetry.addData("frontLeft Position", frontLeft.getCurrentPosition());
             telemetry.addData("frontRight Position", frontRight.getCurrentPosition());
