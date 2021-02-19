@@ -61,6 +61,7 @@ public class autonomous extends LinearOpMode {
          **/
         if (tfod != null) {
             tfod.activate();
+            //tfod.setZoom(2.5, 16/9);
         }
         shooter = hardwareMap.get(DcMotorEx.class, "shooterthing");
         elbow = hardwareMap.get(Servo.class, "elbow");
@@ -80,7 +81,6 @@ public class autonomous extends LinearOpMode {
         Trajectory trajfirst = drive.trajectoryBuilder(startPose)
                 .splineTo(new Vector2d(-57, -33), Math.toRadians(0))
                 .build();
-
 
         waitForStart();
 
@@ -115,7 +115,7 @@ public class autonomous extends LinearOpMode {
         if(rings == 4) {
             traj1 = drive.trajectoryBuilder(trajfirst.end())
                     .splineTo(new Vector2d(-24, -12), Math.toRadians(0))
-                    .splineTo(new Vector2d(36, -60), Math.toRadians(180))
+                    .splineTo(new Vector2d(38, -60), Math.toRadians(180))
                     .build();
         } else if (rings == 1){
             traj1 = drive.trajectoryBuilder(trajfirst.end())
@@ -125,16 +125,16 @@ public class autonomous extends LinearOpMode {
         }else {
             traj1 = drive.trajectoryBuilder(trajfirst.end())
                     .splineTo(new Vector2d(-24, -12), Math.toRadians(0))
-                    .splineTo(new Vector2d(-12, -60), Math.toRadians(180))
+                    .splineTo(new Vector2d(12, -46), Math.toRadians(90))
                     .build();
         }
         Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
 //                .splineTo(new Vector2d(-24, -12), Math.toRadians(0))
-                .lineToLinearHeading(new Pose2d(0, -36, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(0, -38, Math.toRadians(0)))
                 .build();
 
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .lineToLinearHeading(new Pose2d(6, -36, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(6, -38, Math.toRadians(0)))
                 .build();
 
         drive.followTrajectory(traj1);
@@ -152,13 +152,13 @@ public class autonomous extends LinearOpMode {
         PoseStorage.currentPose = drive.getPoseEstimate();
     }
     private void shoot() {
-        shooter.setVelocity(Constants.FLY_WHEEL_SPEED);
-        while (shooter.getVelocity() > Constants.FLY_WHEEL_SPEED + Constants.FLY_WHEEL_DELTA ||
-                shooter.getVelocity() < Constants.FLY_WHEEL_SPEED - Constants.FLY_WHEEL_DELTA) {
+        shooter.setVelocity(-1250);
+        while (shooter.getVelocity() > -1220 ||
+                shooter.getVelocity() < -1280) {
             sleep(100);
         }
         trigger.setPosition(0.5);
-        sleep(50);
+        sleep(500);
         trigger.setPosition(0.6);
     }
     private void initVuforia() {
