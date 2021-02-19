@@ -115,7 +115,7 @@ public class autonomous extends LinearOpMode {
         if(rings == 4) {
             traj1 = drive.trajectoryBuilder(trajfirst.end())
                     .splineTo(new Vector2d(-24, -12), Math.toRadians(0))
-                    .splineTo(new Vector2d(38, -60), Math.toRadians(180))
+                    .splineTo(new Vector2d(40, -60), Math.toRadians(180))
                     .build();
         } else if (rings == 1){
             traj1 = drive.trajectoryBuilder(trajfirst.end())
@@ -134,20 +134,25 @@ public class autonomous extends LinearOpMode {
                 .build();
 
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
+                .lineToLinearHeading(new Pose2d(1, -38, Math.toRadians(0)))
+                .build();
+
+        Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
                 .lineToLinearHeading(new Pose2d(6, -38, Math.toRadians(0)))
                 .build();
 
         drive.followTrajectory(traj1);
         elbow.setPosition(Constants.ELBOW_DOWN_POS);
-        sleep(1000);
+        sleep(1500);
         claw.setPosition(Constants.CLAW_OPEN_POS);
         sleep(100);
         elbow.setPosition(Constants.ELBOW_UP_POS);
         drive.followTrajectory(traj2);
-        shoot();
-        shoot();
-        shoot();
         drive.followTrajectory(traj3);
+        shoot();
+        shoot();
+        shoot();
+        drive.followTrajectory(traj4);
 
         PoseStorage.currentPose = drive.getPoseEstimate();
     }
