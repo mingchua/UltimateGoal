@@ -61,7 +61,7 @@ public class autonomous extends LinearOpMode {
          **/
         if (tfod != null) {
             tfod.activate();
-            //tfod.setZoom(2.5, 16/9);
+            tfod.setZoom(2.5, 16/9);
         }
         shooter = hardwareMap.get(DcMotorEx.class, "shooterthing");
         elbow = hardwareMap.get(Servo.class, "elbow");
@@ -78,17 +78,17 @@ public class autonomous extends LinearOpMode {
 
         drive.setPoseEstimate(startPose);
 
-        Trajectory trajfirst = drive.trajectoryBuilder(startPose)
-                .splineTo(new Vector2d(-57, -33), Math.toRadians(0))
-                .build();
+//        Trajectory trajfirst = drive.trajectoryBuilder(startPose)
+//                .splineTo(new Vector2d(-57, -33), Math.toRadians(0))
+//                .build();
 
         waitForStart();
 
         if(isStopRequested()) return;
 
         claw.setPosition(Constants.CLAW_CLOSED_POS);
-        drive.followTrajectory(trajfirst);
-        sleep(2500);
+//        drive.followTrajectory(trajfirst);
+//        sleep(2500);
         List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
         int rings = 0;
         if (updatedRecognitions != null) {
@@ -109,21 +109,22 @@ public class autonomous extends LinearOpMode {
                         recognition.getRight(), recognition.getBottom());
             }
             telemetry.update();
+            tfod.shutdown();
         }
 
         Trajectory traj1;
         if(rings == 4) {
-            traj1 = drive.trajectoryBuilder(trajfirst.end())
+            traj1 = drive.trajectoryBuilder(startPose)
                     .splineTo(new Vector2d(-24, -12), Math.toRadians(0))
                     .splineTo(new Vector2d(40, -60), Math.toRadians(180))
                     .build();
         } else if (rings == 1){
-            traj1 = drive.trajectoryBuilder(trajfirst.end())
+            traj1 = drive.trajectoryBuilder(startPose)
                     .splineTo(new Vector2d(-24, -12), Math.toRadians(0))
                     .splineTo(new Vector2d(18, -36), Math.toRadians(180))
                     .build();
         }else {
-            traj1 = drive.trajectoryBuilder(trajfirst.end())
+            traj1 = drive.trajectoryBuilder(startPose)
                     .splineTo(new Vector2d(-24, -12), Math.toRadians(0))
                     .splineTo(new Vector2d(12, -46), Math.toRadians(90))
                     .build();
