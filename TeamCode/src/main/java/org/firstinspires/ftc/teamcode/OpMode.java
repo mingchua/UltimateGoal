@@ -56,13 +56,14 @@ public class OpMode extends LinearOpMode {
         transfer.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         shooter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         //set power ---> runs
-        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         transfer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
+        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         // Set your initial pose to x: 10, y: 10, facing 90 degrees
         drive.setPoseEstimate(PoseStorage.currentPose);
 
@@ -135,12 +136,12 @@ public class OpMode extends LinearOpMode {
             }
 
             //if dpad up pressed, changes velocity by +100, if dpad down press, changes velocity by -100
-            if (this.gamepad1.dpad_up) {
-                flywheelspeed += 10;
-            }
-            if (this.gamepad1.dpad_down) {
-                flywheelspeed -= 10;
-            }
+//            if (this.gamepad1.dpad_up) {
+//                flywheelspeed += 10;
+//            }
+//            if (this.gamepad1.dpad_down) {
+//                flywheelspeed -= 10;
+//            }
 
             //sets flywheel velocity to the current velocity set (flywheelspeed)
             if (flywheelOn) {
@@ -167,10 +168,10 @@ public class OpMode extends LinearOpMode {
             }
             lastrightbumper = thisrightbumper;
 
-            //logs for the best humans
+            //logs for puny humans
             //sends power and position (degrees the wheels have spun) to driver station.
             telemetry.addData("Flywheel Velocity", flywheelspeed);
-            telemetry.addData("Elbow position", currentElbowPos);
+            telemetry.addData("turning", turning);
             telemetry.addData("transfer power",transfer.getVelocity());
             telemetry.addData("frontLeft Position", frontLeft.getCurrentPosition());
             telemetry.addData("frontRight Position", frontRight.getCurrentPosition());
