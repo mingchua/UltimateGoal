@@ -103,7 +103,7 @@ public class OpMode extends LinearOpMode {
             Vector2d input = new Vector2d(
                     y * y * (y > 0 ? -1 : 1),
                     x * x * (x > 0 ? -1 : 1)
-            );//.rotated(-poseEstimate.getHeading());
+            ).rotated(-poseEstimate.getHeading());
 
             // Pass in the rotated input + right stick value for rotation
             // Rotation is not part of the rotated input thus must be passed in separately
