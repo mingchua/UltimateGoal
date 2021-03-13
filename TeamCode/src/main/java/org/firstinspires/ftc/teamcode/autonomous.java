@@ -158,9 +158,9 @@ public class autonomous extends LinearOpMode {
         PoseStorage.currentPose = drive.getPoseEstimate();
     }
     private void shoot() {
-        shooter.setVelocity(-1250);
-        while (shooter.getVelocity() > -1220 ||
-                shooter.getVelocity() < -1280) {
+        shooter.setVelocity(2500);
+        while (shooter.getVelocity() > 2480 ||
+                shooter.getVelocity() < 2520) {
             sleep(100);
         }
         trigger.setPosition(0.5);

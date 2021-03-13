@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -62,6 +63,7 @@ public class OpMode extends LinearOpMode {
 //        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         transfer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+//        shooter.setDirection(DcMotorSimple.Direction.REVERSE);
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         // Set your initial pose to x: 10, y: 10, facing 90 degrees
@@ -136,12 +138,12 @@ public class OpMode extends LinearOpMode {
             }
 
             //if dpad up pressed, changes velocity by +100, if dpad down press, changes velocity by -100
-//            if (this.gamepad1.dpad_up) {
-//                flywheelspeed += 10;
-//            }
-//            if (this.gamepad1.dpad_down) {
-//                flywheelspeed -= 10;
-//            }
+            if (this.gamepad1.dpad_up) {
+                flywheelspeed += 10;
+            }
+            if (this.gamepad1.dpad_down) {
+                flywheelspeed -= 10;
+            }
 
             //sets flywheel velocity to the current velocity set (flywheelspeed)
             if (flywheelOn) {
@@ -171,6 +173,7 @@ public class OpMode extends LinearOpMode {
             //logs for puny humans
             //sends power and position (degrees the wheels have spun) to driver station.
             telemetry.addData("Flywheel Velocity", flywheelspeed);
+            telemetry.addData("flywheel current velocity", shooter.getVelocity());
             telemetry.addData("turning", turning);
             telemetry.addData("transfer power",transfer.getVelocity());
             telemetry.addData("frontLeft Position", frontLeft.getCurrentPosition());
