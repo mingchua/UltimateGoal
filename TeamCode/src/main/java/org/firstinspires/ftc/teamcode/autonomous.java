@@ -121,7 +121,7 @@ public class autonomous extends LinearOpMode {
         } else if (rings == 1){
             traj1 = drive.trajectoryBuilder(startPose)
                     .splineTo(new Vector2d(-24, -12), Math.toRadians(0))
-                    .splineTo(new Vector2d(18, -36), Math.toRadians(180))
+                    .splineTo(new Vector2d(23, -36), Math.toRadians(180))
                     .build();
         }else {
             traj1 = drive.trajectoryBuilder(startPose)
@@ -129,38 +129,81 @@ public class autonomous extends LinearOpMode {
                     .splineTo(new Vector2d(12, -46), Math.toRadians(90))
                     .build();
         }
-        Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-//                .splineTo(new Vector2d(-24, -12), Math.toRadians(0))
+
+        Trajectory traj2 = drive.trajectoryBuilder(traj1.end(), true)
+                .splineTo(new Vector2d(-24, -50), Math.toRadians(180))
+                .splineTo(new Vector2d(-33, -51), Math.toRadians(150))
+                .build();
+
+        Trajectory traj3;
+        if(rings == 4) {
+            traj3 = drive.trajectoryBuilder(traj2.end())
+                    .splineTo(new Vector2d(51, -46), Math.toRadians(90))
+                    .build();
+        } else if (rings == 1){
+            traj3 = drive.trajectoryBuilder(traj2.end())
+                    .splineTo(new Vector2d(18, -45), Math.toRadians(180))
+                    .build();
+        }else {
+            traj3 = drive.trajectoryBuilder(traj2.end())
+                    .splineTo(new Vector2d(0, -38), Math.toRadians(90))
+                    .build();}
+
+        Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
                 .lineToLinearHeading(new Pose2d(0, -38, Math.toRadians(0)))
                 .build();
 
-        Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .lineToLinearHeading(new Pose2d(1, -38, Math.toRadians(0)))
+        Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
+                .lineToLinearHeading(new Pose2d(-3, -38, Math.toRadians(0)))
                 .build();
 
-        Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
+        Trajectory traj6 = drive.trajectoryBuilder(traj5.end())
                 .lineToLinearHeading(new Pose2d(6, -38, Math.toRadians(0)))
                 .build();
 
+
+        //drop off 1st wobble goal
         drive.followTrajectory(traj1);
         elbow.setPosition(Constants.ELBOW_DOWN_POS);
         sleep(1500);
         claw.setPosition(Constants.CLAW_OPEN_POS);
         sleep(100);
         elbow.setPosition(Constants.ELBOW_UP_POS);
+
+        //get 2nd wobble goal
         drive.followTrajectory(traj2);
+        elbow.setPosition(Constants.ELBOW_DOWN_POS);
+        sleep(1500);
+        claw.setPosition(Constants.CLAW_CLOSED_POS);
+        sleep(100);
+        elbow.setPosition(Constants.ELBOW_UP_POS);
+        sleep(1500);
+
+        //drops off 2nd wobble goal
         drive.followTrajectory(traj3);
-        shoot();
-        shoot();
-        shoot();
+        elbow.setPosition(Constants.ELBOW_DOWN_POS);
+        sleep(1500);
+        claw.setPosition(Constants.CLAW_OPEN_POS);
+        sleep(100);
+        elbow.setPosition(Constants.ELBOW_UP_POS);
+        sleep(1500);
+
+        //drive up to shoot
         drive.followTrajectory(traj4);
+        drive.followTrajectory(traj5);
+        shoot();
+        shoot();
+        shoot();
+
+        //stop on line
+        drive.followTrajectory(traj6);
 
         PoseStorage.currentPose = drive.getPoseEstimate();
     }
     private void shoot() {
         shooter.setVelocity(2500);
-        while (shooter.getVelocity() > 2480 ||
-                shooter.getVelocity() < 2520) {
+        while (shooter.getVelocity() < 2460 ||
+                shooter.getVelocity() > 2540) {
             sleep(100);
         }
         trigger.setPosition(0.5);
@@ -194,3 +237,7 @@ public class autonomous extends LinearOpMode {
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_QUAD_ELEMENT, LABEL_SINGLE_ELEMENT);
     }
 }
+/*move thing YAY!!!!
+.lineToLinearHeading(new Pose2d(0, 0, Math.toRadians(0)))
+.splineTo(new Vector2d(0, 0), Math.toRadians(0))
+ */
