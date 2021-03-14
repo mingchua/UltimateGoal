@@ -116,7 +116,7 @@ public class autonomous extends LinearOpMode {
         if(rings == 4) {
             traj1 = drive.trajectoryBuilder(startPose)
                     .splineTo(new Vector2d(-24, -12), Math.toRadians(0))
-                    .splineTo(new Vector2d(40, -60), Math.toRadians(180))
+                    .splineTo(new Vector2d(48, -60), Math.toRadians(180))
                     .build();
         } else if (rings == 1){
             traj1 = drive.trajectoryBuilder(startPose)
@@ -126,31 +126,36 @@ public class autonomous extends LinearOpMode {
         }else {
             traj1 = drive.trajectoryBuilder(startPose)
                     .splineTo(new Vector2d(-24, -12), Math.toRadians(0))
-                    .splineTo(new Vector2d(12, -46), Math.toRadians(90))
+                    .splineTo(new Vector2d(3, -53), Math.toRadians(135))
                     .build();
         }
 
-        Trajectory traj2 = drive.trajectoryBuilder(traj1.end(), true)
-                .splineTo(new Vector2d(-24, -50), Math.toRadians(180))
-                .splineTo(new Vector2d(-33, -51), Math.toRadians(150))
+        Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
+                .splineTo(new Vector2d(-24, -58), Math.toRadians(180))
+//                .splineTo(new Vector2d(-33, -52), Math.toRadians(-30))
+                .build();
+
+        Trajectory trajTwo = drive.trajectoryBuilder(traj2.end(), true)
+                .lineToLinearHeading(new Pose2d(-35, -51, Math.toRadians(-20)))
                 .build();
 
         Trajectory traj3;
         if(rings == 4) {
-            traj3 = drive.trajectoryBuilder(traj2.end())
+            traj3 = drive.trajectoryBuilder(trajTwo.end())
+                    .splineTo(new Vector2d(12, -46), Math.toRadians(0))
                     .splineTo(new Vector2d(51, -46), Math.toRadians(90))
                     .build();
         } else if (rings == 1){
-            traj3 = drive.trajectoryBuilder(traj2.end())
+            traj3 = drive.trajectoryBuilder(trajTwo.end())
                     .splineTo(new Vector2d(18, -45), Math.toRadians(180))
                     .build();
         }else {
-            traj3 = drive.trajectoryBuilder(traj2.end())
-                    .splineTo(new Vector2d(0, -38), Math.toRadians(90))
+            traj3 = drive.trajectoryBuilder(trajTwo.end())
+                    .splineTo(new Vector2d(3, -43), Math.toRadians(90))
                     .build();}
 
         Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
-                .lineToLinearHeading(new Pose2d(0, -38, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(1, -38, Math.toRadians(0)))
                 .build();
 
         Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
@@ -172,6 +177,7 @@ public class autonomous extends LinearOpMode {
 
         //get 2nd wobble goal
         drive.followTrajectory(traj2);
+        drive.followTrajectory(trajTwo);
         elbow.setPosition(Constants.ELBOW_DOWN_POS);
         sleep(1500);
         claw.setPosition(Constants.CLAW_CLOSED_POS);
@@ -190,7 +196,9 @@ public class autonomous extends LinearOpMode {
 
         //drive up to shoot
         drive.followTrajectory(traj4);
+        shooter.setVelocity(2500);
         drive.followTrajectory(traj5);
+        sleep(100);
         shoot();
         shoot();
         shoot();
@@ -204,10 +212,10 @@ public class autonomous extends LinearOpMode {
         shooter.setVelocity(2500);
         while (shooter.getVelocity() < 2460 ||
                 shooter.getVelocity() > 2540) {
-            sleep(100);
+            sleep(300);
         }
         trigger.setPosition(0.5);
-        sleep(500);
+        sleep(300);
         trigger.setPosition(0.6);
     }
     private void initVuforia() {
@@ -237,7 +245,3 @@ public class autonomous extends LinearOpMode {
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_QUAD_ELEMENT, LABEL_SINGLE_ELEMENT);
     }
 }
-/*move thing YAY!!!!
-.lineToLinearHeading(new Pose2d(0, 0, Math.toRadians(0)))
-.splineTo(new Vector2d(0, 0), Math.toRadians(0))
- */
