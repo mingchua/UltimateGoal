@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 public class Constants {
-    static final double ELBOW_DOWN_POS = 0;
-    static final double ELBOW_UP_POS = 0.8;
+    static final double ELBOW_DOWN_POS = 0.1;
+    static final double ELBOW_UP_POS = 1;
     static final double CLAW_OPEN_POS = 0.6;
     static final double CLAW_CLOSED_POS = 0.25;
 

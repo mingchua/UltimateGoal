@@ -420,4 +420,8 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         return (double) imu.getAngularVelocity().zRotationRate;
     }
+
+    public void cancelFollowing() {
+        mode = Mode.IDLE;
+    }
 }
