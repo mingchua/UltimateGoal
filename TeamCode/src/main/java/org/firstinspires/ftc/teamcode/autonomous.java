@@ -195,8 +195,8 @@ public class autonomous extends LinearOpMode {
         sleep(1500);
 
         //drive up to shoot
-        drive.followTrajectory(traj4);
         shooter.setVelocity(2500);
+        drive.followTrajectory(traj4);
         drive.followTrajectory(traj5);
         sleep(100);
         shoot();
@@ -217,6 +217,7 @@ public class autonomous extends LinearOpMode {
         trigger.setPosition(0.5);
         sleep(300);
         trigger.setPosition(0.6);
+        sleep(200);
     }
     private void initVuforia() {
         /*

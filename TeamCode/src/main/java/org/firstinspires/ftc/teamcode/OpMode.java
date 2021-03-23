@@ -185,9 +185,9 @@ public class OpMode extends LinearOpMode {
                         shooter.setVelocity(0.0);
                     }
                     if (triggerOn) {
-                        servo.setPosition(0.5);
+                        trigger.setPosition(0.5);
                         sleep(50);
-                        servo.setPosition(0.6);
+                        trigger.setPosition(0.6);
                     }
 
                     if (gamepad1.b) {
@@ -217,7 +217,7 @@ public class OpMode extends LinearOpMode {
                         currentMode = Mode.DRIVER_CONTROL;
                     }
                     if (!drive.isBusy()) {
-                        currentMode = Mode.DROP;
+                        currentMode = Mode.DRIVER_CONTROL;
                     }
                     break;
 
